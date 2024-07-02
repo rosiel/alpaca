@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\islandora\EventGenerator;
+namespace Drupal\huacaya\EventGenerator;
 
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Action\ConfigurableActionBase;
@@ -12,9 +12,8 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\islandora\Event\StompHeaderEvent;
-use Drupal\islandora\Event\StompHeaderEventException;
-use Drupal\islandora\Exception\IslandoraDerivativeException;
+use Drupal\huacaya\Event\StompHeaderEvent;
+use Drupal\huacaya\Event\StompHeaderEventException;
 use Stomp\Exception\StompException;
 use Stomp\StatefulStomp;
 use Stomp\Transport\Message;
@@ -44,7 +43,7 @@ abstract class EmitEvent extends ConfigurableActionBase implements ContainerFact
   /**
    * Event generator service.
    *
-   * @var \Drupal\islandora\EventGenerator\EventGeneratorInterface
+   * @var \Drupal\huacaya\EventGenerator\EventGeneratorInterface
    */
   protected $eventGenerator;
 
@@ -89,7 +88,7 @@ abstract class EmitEvent extends ConfigurableActionBase implements ContainerFact
    *   Current user.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   Entity type manager.
-   * @param \Drupal\islandora\EventGenerator\EventGeneratorInterface $event_generator
+   * @param \Drupal\huacaya\EventGenerator\EventGeneratorInterface $event_generator
    *   EventGenerator service to serialize AS2 events.
    * @param \Stomp\StatefulStomp $stomp
    *   Stomp client.
@@ -132,11 +131,11 @@ abstract class EmitEvent extends ConfigurableActionBase implements ContainerFact
       $plugin_definition,
       $container->get('current_user'),
       $container->get('entity_type.manager'),
-      $container->get('islandora.eventgenerator'),
-      $container->get('islandora.stomp'),
+      $container->get('huacaya.eventgenerator'),
+      $container->get('huacaya.stomp'),
       $container->get('messenger'),
       $container->get('event_dispatcher'),
-      $container->get('logger.channel.islandora')
+      $container->get('logger.channel.huacaya')
     );
   }
 
@@ -160,18 +159,14 @@ abstract class EmitEvent extends ConfigurableActionBase implements ContainerFact
       $data = $this->generateData($entity);
 
       $event = $this->eventDispatcher->dispatch(
-        new StompHeaderEvent($entity, $user, $data, $this->getConfiguration()),
-        StompHeaderEvent::EVENT_NAME
+        StompHeaderEvent::EVENT_NAME,
+        new StompHeaderEvent($entity, $user, $data, $this->getConfiguration())
       );
 
       $message = new Message(
         $this->eventGenerator->generateEvent($entity, $user, $data),
         $event->getHeaders()->all()
       );
-    }
-    catch (IslandoraDerivativeException $e) {
-      $this->logger->info($e->getMessage());
-      return;
     }
     catch (StompHeaderEventException $e) {
       $this->logger->error($e->getMessage());
@@ -199,6 +194,12 @@ abstract class EmitEvent extends ConfigurableActionBase implements ContainerFact
       $this->stomp->begin();
       $this->stomp->send($this->configuration['queue'], $message);
       $this->stomp->commit();
+      $this->logger->debug("Event![@type @id][@event][@plugin][@queue]", [
+        '@type' => $entity->getEntityTypeId(),
+        '@id' => $entity->id(),
+        '@plugin' => $this->getPluginId(),
+        '@queue' => $this->getConfiguration()['queue'],
+      ]);
     }
     catch (StompException $e) {
       // Log it.

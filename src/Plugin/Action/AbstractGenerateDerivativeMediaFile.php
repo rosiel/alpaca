@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\islandora\Plugin\Action;
+namespace Drupal\huacaya\Plugin\Action;
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -55,7 +55,7 @@ class AbstractGenerateDerivativeMediaFile extends AbstractGenerateDerivativeBase
       'media' => $entity->id(),
       'destination_field' => $this->configuration['destination_field_name'],
     ];
-    $data['destination_uri'] = Url::fromRoute('islandora.attach_file_to_media', $route_params)
+    $data['destination_uri'] = Url::fromRoute('huacaya.attach_file_to_media', $route_params)
       ->setAbsolute()
       ->toString();
 

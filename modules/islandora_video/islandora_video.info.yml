@@ -1,7 +1,0 @@
-name: 'Islandora Video'
-description: 'Islandora video derivative actions'
-type: module
-package: Islandora
-core_version_requirement: ^9 || ^10
-dependencies:
-  - drupal:islandora

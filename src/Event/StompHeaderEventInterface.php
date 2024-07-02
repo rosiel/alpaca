@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\islandora\Event;
+namespace Drupal\huacaya\Event;
 
 /**
  * Contract for representing an event to build headers for STOMP messages.
  */
 interface StompHeaderEventInterface {
 
-  const EVENT_NAME = 'islandora.stomp.header_event';
+  const EVENT_NAME = 'huacaya.stomp.header_event';
 
   /**
    * Get the headers being built for STOMP.

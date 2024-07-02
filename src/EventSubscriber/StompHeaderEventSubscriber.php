@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\islandora\EventSubscriber;
+namespace Drupal\huacaya\EventSubscriber;
 
-use Drupal\islandora\Event\StompHeaderEventException;
-use Drupal\islandora\Event\StompHeaderEventInterface;
+use Drupal\huacaya\Event\StompHeaderEventException;
+use Drupal\huacaya\Event\StompHeaderEventInterface;
 use Drupal\jwt\Authentication\Provider\JwtAuth;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;

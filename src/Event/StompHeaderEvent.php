@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\islandora\Event;
+namespace Drupal\huacaya\Event;
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Session\AccountInterface;
 
 use Symfony\Component\HttpFoundation\ParameterBag;
-use Drupal\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\Event;
 
 /**
  * Event used to build headers for STOMP.

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\islandora\Event;
+namespace Drupal\huacaya\Event;
 
 /**
  * Typification for handling exceptions specific to STOMP header generation.

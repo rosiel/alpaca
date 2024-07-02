@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\islandora;
+namespace Drupal\huacaya;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\islandora\Form\IslandoraSettingsForm;
+use Drupal\huacaya\Form\HuacayaSettingsForm;
 use Stomp\Client;
 use Stomp\StatefulStomp;
 
@@ -23,9 +23,9 @@ class StompFactory {
    */
   public static function create(ConfigFactoryInterface $config) {
     // Get broker url from config.
-    $settings = $config->get(IslandoraSettingsForm::CONFIG_NAME);
-    $brokerUrl = $settings->get(IslandoraSettingsForm::BROKER_URL);
-    $brokerUser = $settings->get(IslandoraSettingsForm::BROKER_USER);
+    $settings = $config->get(HuacayaSettingsForm::CONFIG_NAME);
+    $brokerUrl = $settings->get(HuacayaSettingsForm::BROKER_URL);
+    $brokerUser = $settings->get(HuacayaSettingsForm::BROKER_USER);
     // Try a sensible default if one hasn't been configured.
     if (empty($brokerUrl)) {
       $brokerUrl = "tcp://localhost:61613";
@@ -33,7 +33,7 @@ class StompFactory {
 
     $client = new Client($brokerUrl);
     if ($brokerUser) {
-      $client->setLogin($brokerUser, $settings->get(IslandoraSettingsForm::BROKER_PASSWORD));
+      $client->setLogin($brokerUser, $settings->get(HuacayaSettingsForm::BROKER_PASSWORD));
     }
     return new StatefulStomp($client);
   }

@@ -1,0 +1,30 @@
+# Huacaya Services
+# huacaya.services.yml:
+services:
+  huacaya.jwt-subscriber:
+    class: Drupal\huacaya\EventSubscriber\JwtEventSubscriber
+    factory: [ 'Drupal\huacaya\EventSubscriber\JwtEventSubscriber', create ]
+    arguments: [ '@entity_type.manager', '@current_user' ]
+    tags:
+      - { name: event_subscriber }
+  huacaya.stomp:
+    class: Stomp\StatefulStomp
+    factory: [ 'Drupal\huacaya\StompFactory', create ]
+    arguments: [ '@config.factory' ]
+  huacaya.stomp.auth_header_listener:
+    class: Drupal\huacaya\EventSubscriber\StompHeaderEventSubscriber
+    arguments: [ '@jwt.authentication.jwt' ]
+    tags:
+      - { name: event_subscriber }
+  huacaya.eventgenerator:
+    class: Drupal\huacaya\EventGenerator\EventGenerator
+    arguments: ['@huacaya.utils', '@huacaya.media_source_service']
+  huacaya.media_source_service:
+    class: Drupal\huacaya\MediaSource\MediaSourceService
+    arguments: [ '@entity_type.manager', '@current_user', '@language_manager', '@file_system' ]
+  logger.channel.huacaya:
+    parent: logger.channel_base
+    arguments: [ 'huacaya' ]
+  huacaya.utils:
+    class: Drupal\huacaya\HuacayaUtils
+    arguments: [ '@language_manager' ]

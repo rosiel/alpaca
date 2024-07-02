@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\islandora\EventGenerator;
+namespace Drupal\huacaya\EventGenerator;
 
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\islandora\IslandoraUtils;
-use Drupal\islandora\MediaSource\MediaSourceService;
+use Drupal\huacaya\HuacayaUtils;
+use Drupal\huacaya\MediaSource\MediaSourceService;
 use Drupal\user\UserInterface;
 use Drupal\Core\Site\Settings;
 use Drupal\media\Entity\Media;
@@ -18,28 +18,28 @@ use Drupal\Core\Entity\EntityStorageInterface;
 class EventGenerator implements EventGeneratorInterface {
 
   /**
-   * Islandora utils.
+   * Huacaya utils.
    *
-   * @var \Drupal\islandora\IslandoraUtils
+   * @var \Drupal\huacaya\HuacayaUtils
    */
   protected $utils;
 
   /**
    * Media source service.
    *
-   * @var \Drupal\islandora\MediaSource\MediaSourceService
+   * @var \Drupal\huacaya\MediaSource\MediaSourceService
    */
   protected $mediaSource;
 
   /**
    * Constructor.
    *
-   * @param \Drupal\islandora\IslandoraUtils $utils
-   *   Islandora utils.
-   * @param \Drupal\islandora\MediaSource\MediaSourceService $media_source
+   * @param \Drupal\huacaya\HuacayaUtils $utils
+   *   Huacaya utils.
+   * @param \Drupal\huacaya\MediaSource\MediaSourceService $media_source
    *   Media source service.
    */
-  public function __construct(IslandoraUtils $utils, MediaSourceService $media_source) {
+  public function __construct(HuacayaUtils $utils, MediaSourceService $media_source) {
     $this->utils = $utils;
     $this->mediaSource = $media_source;
   }
@@ -147,19 +147,8 @@ class EventGenerator implements EventGeneratorInterface {
       }
     }
 
-    $allowed_keys = [
-      "file_upload_uri",
-      "fedora_uri",
-      "source_uri",
-      "destination_uri",
-      "args",
-      "mimetype",
-      "source_field",
-    ];
-    $keys_to_unset = array_diff(array_keys($data), $allowed_keys);
-    foreach ($keys_to_unset as $key) {
-      unset($data[$key]);
-    }
+    unset($data["event"]);
+    unset($data["queue"]);
 
     if (!empty($data)) {
       $event["attachment"] = [
@@ -203,7 +192,6 @@ class EventGenerator implements EventGeneratorInterface {
   protected function getRevisionIds(Media $media, EntityStorageInterface $media_storage) {
     $result = $media_storage->getQuery()
       ->allRevisions()
-      ->accessCheck(TRUE)
       ->condition($media->getEntityType()->getKey('id'), $media->id())
       ->sort($media->getEntityType()->getKey('revision'), 'DESC')
       ->execute();

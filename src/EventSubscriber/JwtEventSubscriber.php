@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\islandora\EventSubscriber;
+namespace Drupal\huacaya\EventSubscriber;
 
-use Drupal\islandora\Form\IslandoraSettingsForm;
+use Drupal\huacaya\Form\HuacayaSettingsForm;
 use Drupal\jwt\Authentication\Event\JwtAuthValidateEvent;
 use Drupal\jwt\Authentication\Event\JwtAuthValidEvent;
 use Drupal\jwt\Authentication\Event\JwtAuthGenerateEvent;
@@ -15,7 +15,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
  * Subscribes to Jwt Events.
  *
- * @package Drupal\islandora\EventSubscriber
+ * @package Drupal\huacaya\EventSubscriber
  */
 class JwtEventSubscriber implements EventSubscriberInterface {
 
@@ -91,8 +91,8 @@ class JwtEventSubscriber implements EventSubscriberInterface {
 
     // Standard claims, validated at JWT validation time.
     $event->addClaim('iat', time());
-    $expiry_setting = \Drupal::config(IslandoraSettingsForm::CONFIG_NAME)
-      ->get(IslandoraSettingsForm::JWT_EXPIRY);
+    $expiry_setting = \Drupal::config(HuacayaSettingsForm::CONFIG_NAME)
+      ->get(HuacayaSettingsForm::JWT_EXPIRY);
     $expiry = $expiry_setting ? $expiry_setting : '+2 hour';
     $event->addClaim('exp', strtotime($expiry));
     $event->addClaim('webid', $this->currentUser->id());

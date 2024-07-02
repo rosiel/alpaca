@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\islandora\EventGenerator;
+namespace Drupal\huacaya\EventGenerator;
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\user\UserInterface;
